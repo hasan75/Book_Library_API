@@ -19,28 +19,33 @@ const searchBook = () => {
     searchInput.value = '';
 
     if(searchText === ''){
-        showError('Type Some Keywords to see books');
+        displayError('Please type something to search.');
         document.getElementById('search-result-counter').textContent = '';
+        toggleSpinner('none');
     }
     else{
+        document.getElementById('display_error').textContent = '';
+
       const url = `https://openlibrary.org/search.json?q=${searchText}`;
     fetch(url)
     .then(res => res.json())
     .then(data => displaySearchResutl(data.docs))
-    .catch(error => console.log(error))  
+    .catch(error => displayError(error))  
     }
     
 }
-const showError = error => {
-    const searchContainer = document.getElementById('result-container');
-    const div = document.createElement('div');
-    div.innerHTML = `
-    <p> ${error} </p>
-    `;
-    searchContainer.appendChild(div);
-}
+
+// displaying error message 
+const displayError = (errorMessage = 'Something is wrong. Try again later.') => {
+	document.getElementById('display_error').innerHTML = `
+		<h5 class="text-danger fw-bold my-4">${errorMessage}</h5>
+	`;
+};
+
+// display the book cards 
 const displaySearchResutl = books => {
     const resultContainer = document.getElementById('result-container');
+    // setting search result amount 
     document.getElementById('search-result-counter').innerHTML = `
     <p class="text-white p-3 mb-5 bg-body text-center border rounded">${books.length} Search Results Found </p>
     `;
