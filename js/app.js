@@ -1,11 +1,26 @@
+// spinner options 
+const toggleSpinner = displayStyle => {
+    document.getElementById('spinner').style.display = displayStyle;
+}
+const toggleSearchResult = displayStyle => {
+    document.getElementById('result-container').style.display = displayStyle;
+    document.getElementById('search-result-counter').style.display = displayStyle;
+}
+
+
+// search book 
 const searchBook = () => {
     const searchInput = document.getElementById('search-input');
     const searchText = searchInput.value;
+    // showing spinner 
+    toggleSpinner('block');
+    toggleSearchResult('none');
+    // clearing the input field 
     searchInput.value = '';
 
     if(searchText === ''){
-        console.log('error');
-        document.getElementById('search-result-counter').textContent = ''
+        showError('Type Some Keywords to see books');
+        document.getElementById('search-result-counter').textContent = '';
     }
     else{
       const url = `https://openlibrary.org/search.json?q=${searchText}`;
@@ -15,6 +30,14 @@ const searchBook = () => {
     .catch(error => console.log(error))  
     }
     
+}
+const showError = error => {
+    const searchContainer = document.getElementById('result-container');
+    const div = document.createElement('div');
+    div.innerHTML = `
+    <p> ${error} </p>
+    `;
+    searchContainer.appendChild(div);
 }
 const displaySearchResutl = books => {
     const resultContainer = document.getElementById('result-container');
@@ -34,15 +57,17 @@ const displaySearchResutl = books => {
             <div class="card-body">
                 <h5 class="card-title">${book.title}</h5>
                 <ul class="card-text">
-                    <li>Author: ${book.author_name[0] ? book.author_name[0]: 'Author Not Found'}</li>
-                    <li>Publisher: ${book.publisher[0]}</li>
-                    <li>1st Publish Year: ${book.first_publish_year}</li>
+                    <li>Author: ${book.author_name[0] ? book.author_name[0] : 'Author Not Found'}</li>
+                    <li>Publisher: ${book.publisher[0] ? book.publisher[0] : 'Publisher Not Found'}</li>
+                    <li>1st Publish Year: ${book.first_publish_year ? book.first_publish_year : 'First Publish Year Not Found'}</li>
                 </ul>
             </div>
         </div>
         `;
-        resultContainer.appendChild(div)
+        resultContainer.appendChild(div);
         
     });
+    toggleSpinner('none');
+    toggleSearchResult('block');
 
 }
